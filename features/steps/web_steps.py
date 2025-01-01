@@ -25,7 +25,7 @@ For information on Waiting until elements are present in the HTML see:
     https://selenium-python.readthedocs.io/waits.html
 """
 import logging
-from behave import when, then
+from behave import given, when, then
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select, WebDriverWait
 from selenium.webdriver.support import expected_conditions
@@ -132,3 +132,100 @@ def step_impl(context, element_name, text_string):
     )
     element.clear()
     element.send_keys(text_string)
+
+@when('I press the "Create" button')
+def step_impl(context):
+    context.driver.find_element(By.ID, "create-btn").click()
+
+@when('I press the "Clear" button')
+def step_impl(context):
+    context.driver.find_element(By.ID, "clear-btn").click()
+
+@when('I press the "Retrieve" button')
+def step_impl(context):
+    context.driver.find_element(By.ID, "retrieve-btn").click()
+
+@when('I press the "Search" button')
+def step_impl(context):
+    context.driver.find_element(By.ID, "search-btn").click()
+
+@then('I should see the message "Success"')
+def step_impl(context):
+    # WebDriverWait(context.driver, 30).until( expected_conditions.text_to_be_present_in_element( (By.TAG_NAME, "body"), "Success" ))
+    # context.driver.save_screenshot('search_results.png')
+    # print(context.driver.page_source)
+    assert "Success" in context.driver.page_source
+
+@when('I press the "Update" button')
+def step_impl(context):
+    context.driver.find_element(By.ID, "update-btn").click()
+
+@then('I should see "Fedora" in the results')
+def step_impl(context):
+    assert "Fedora" in context.driver.page_source
+
+@then('I should not see "Hat" in the results')
+def step_impl(context):
+    assert "Hat" not in context.driver.page_source
+
+@when('I press the "Delete" button')
+def step_impl(context):
+    context.driver.find_element(By.ID, "delete-btn").click()
+
+@then('I should see the message "Product has been Deleted!"')
+def step_impl(context):
+    assert "Product has been Deleted!" in context.driver.page_source
+
+@then('I should see "Hat" in the results')
+def step_impl(context):
+    assert "Hat" in context.driver.page_source
+
+@then('I should see "Shoes" in the results')
+def step_impl(context):
+    assert "Shoes" in context.driver.page_source
+
+@then('I should see "Big Mac" in the results')
+def step_impl(context):
+    assert "Big Mac" in context.driver.page_source
+
+@then('I should see "Sheets" in the results')
+def step_impl(context):
+    assert "Sheets" in context.driver.page_source
+
+@then('I should not see "Shoes" in the results')
+def step_impl(context):
+    assert "Shoes" not in context.driver.page_source
+
+@then('I should not see "Sheets" in the results')
+def step_impl(context):
+    assert "Sheets" not in context.driver.page_source
+
+@when('I press the "{button}" button')
+def step_impl(context, button):
+    button_id = button.lower() + '-btn'
+    context.driver.find_element_by_id(button_id).click()
+
+@then('I should see "{name}" in the results')
+def step_impl(context, name):
+    found = WebDriverWait(context.driver, context.wait_seconds).until(
+        expected_conditions.text_to_be_present_in_element(
+            (By.ID, 'search_results'),
+            name
+        )
+    )
+    assert(found)
+
+@then('I should not see "{name}" in the results')
+def step_impl(context, name):
+    element = context.driver.find_element_by_id('search_results')
+    assert(name not in element.text)
+
+@then('I should see the message "{message}"')
+def step_impl(context, message):
+    found = WebDriverWait(context.driver, context.wait_seconds).until(
+        expected_conditions.text_to_be_present_in_element(
+            (By.ID, 'flash_message'),
+            message
+        )
+    )
+    assert(found)
